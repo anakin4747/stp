@@ -1,0 +1,66 @@
+So the program will require you to input several switches with their priority
+and MAC address. And each connection the switch has as well as information that
+is needed to determine the cost of the link.
+
+
+    Input:
+        Name of switch : char[MAX]
+        Priority, MAC Address -> Bridge ID : char*, char* -> long long 64 bit
+        Connection :
+            - Connects to which switch name 
+            - Cost of link
+    
+
+    The program will need to process the input to check valid MAC addresses and
+    priority. Not much name validation will be done not really necessary just
+    enforce a max length. All the links need to match.
+
+
+    input.c
+        - processes command line args to return the switch topology.
+        
+    switch.c
+        - class which defines a switch object
+
+
+So you are going to use ncurses to make a menu for inputting everything.
+
+COOL: Spawn a thread that processes the input to predict or validate input
+
+    You will iterate over switches to implement 
+
+Example prompt:
+
+Switch 1:
+    Name =  (Gets saved for autocomplete in later switch definitions)
+    Priority =      (No input sets default as 32768)
+    MAC Address =   (Accepts all 3 forms of MAC address input)
+
+    Links:
+        Opposite Node =  (For later switches I want a way to provide a
+                            autocompelete for this option)
+        Link Speed =  (Look into specs for typical inputs)
+
+Another example prompt:
+
+Switch 1 : Name     (This switch has already been defined)
+
+Switch 2:
+    Name =  
+    Priority =      
+    MAC Address =   
+
+    Links:
+        Opposite Node =  
+        Link Speed =  
+
+So for commands I want to incorporate some vim like key bindings
+
+After the first switch the second one should be auto filled with all the same
+info as the first. Then the user should be able to change the default with c,
+select the input with <enter>, edit the input with a, i, A, I. <esc> exits
+editting and enter moves to the next input in either mode. You can use the hjkl
+to move between options. If you move up back to the previous switch you start
+to edit that one and the current one closes. 
+
+

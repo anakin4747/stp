@@ -1,0 +1,74 @@
+Building a loop free topology.
+
+Since Layer 2 doesn't have the TTL which decrements every hop like routers do
+in Layer 3, we need to ensure looping does not occur but also that we have
+redundancy.
+
+Steps:
+
+    Step 1: Who is the root bridge?
+
+        The root bridge is determined by the ethernet switch with the lowest
+        bridge ID. The bridge ID is determined by the priority which can be
+        altered and the MAC address. Default priority is 32768.
+
+            Priority (2 Bytes) + MAC Address (6 Bytes) = Bridge ID (8 Bytes)
+
+        The lowest bridge ID is the root bridge by default.
+
+    Step 2: What are the root ports?
+
+        The root ports are the path back to the root bridge with the lowest
+        cost. So each switch has one except for the root bridge.
+
+            Port Costs: (Long Path Cost Method)
+
+                Port Speed          STP Port Cost
+                  10 Mbps            2 000 000
+                 100 Mbps              200 000
+                   1 Gbps               20 000
+                  10 Gbps                2 000
+
+                    SW1(RB)
+                    /     \
+                  /         \
+                /             \
+            RP/                 \RP
+            SW2-----------------SW3
+
+        The links above switches 2 and 3 point back to the root bridge. The
+        ports which point are Root Ports.
+
+    Step 3: What are the designated ports?
+
+        The designated ports are closest port to the root bridge on each
+        segment. The root bridge's ports included.
+                    
+                    SW1(RB)
+                  DP/     \DP
+                  /         \
+                /             \
+            RP/                 \RP
+            SW2-----------------SW3
+
+        We can first choose the ports on the root bridge to be designated ports.
+
+        But then we need to determine the designated port on the bottom segment.
+        To determine the designated port by calculating the cost of the closest
+        port. Let's say that each segment share a port cost of 4. That means
+        the ports on the connection between SW2 and SW3 both have the some cost
+        of 8 from data coming from the RB through the opposing switch.
+
+        Its a tie so we choose the lowest bridge ID. Let's say switch 2 has the lowest.
+
+                    SW1(RB)
+                  DP/     \DP
+                  /         \
+                /             \
+            RP/                 \RP
+            SW2-----------------SW3
+               DP            BLK
+
+        So we label the SW2 port as a DP and label any remaining ports as
+        blocking ports.
+
