@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <curses.h>
 #include <ncurses.h>
 
@@ -12,10 +13,13 @@
 #define SPED_X_POS 17
 #define SPED_Y_POS 8
 
+void ZZquit(void);
+
 int main(int argc, char** argv){
 
     // Initilazes screen
     initscr();
+    cbreak();
     noecho();
 
 
@@ -44,6 +48,7 @@ int main(int argc, char** argv){
 
     // Waits for user input
     char input = getch();
+    int Z_depressed = 0;
 
     switch (input){
         case 'h':
@@ -77,6 +82,10 @@ int main(int argc, char** argv){
         case '?':
             printw("Help\n");
             break;
+        case 'Z':
+            // Wont work until the switch is looped
+            Z_depressed ? ZZquit() : (Z_depressed = 1);
+            break;
         default:
             // Do nothing
             break;
@@ -90,3 +99,9 @@ int main(int argc, char** argv){
 
     return 0;
 }
+
+void ZZquit(void){
+    endwin();
+    exit(1);
+}
+
