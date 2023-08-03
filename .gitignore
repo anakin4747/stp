@@ -1,5 +1,6 @@
-subnet
+stp
+a.out
 docs
 *.d
 *.o
-.gdbinit
+.gdbinit.gdb

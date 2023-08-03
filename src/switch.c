@@ -19,10 +19,24 @@
 #define SPED_X_POS 17
 #define SPED_Y_POS 8
 
+#define DEFAULT_FIELDS 5
+
 typedef enum {
     OPEN,
     CLOSED
 } viewing_state;
+
+
+/*
+ *
+ * Where I left off
+ *
+ * - Couldn't get all the fields to work together in a dynamic FIELD**
+ * - Needs to be dynamic so the user can add links willy nilly
+ * - Needs to be in that FIELD** so that they can all be in the same form
+ * - This currently works with a static array but it can be the permanent solution
+ *
+ */
 
 // Forward declaration
 typedef struct {
@@ -30,17 +44,12 @@ typedef struct {
     unsigned int number;
     unsigned int top_row;
     unsigned int bottom_row;
-    union {
-        struct {
-            FIELD* name;
-            FIELD* priority;
-            FIELD* mac_addr;
-            FIELD* opposite_node;
-            FIELD* link_speed;
-        };
-        FIELD* field_array[6]; // One more for NULL?
-    };
-    // FIELD** link_array;
+    FIELD* name;
+    FIELD* priority;
+    FIELD* mac_addr;
+    FIELD* opposite_node;
+    FIELD* link_speed;
+    FIELD** field_array;
     FORM* form; // To encapsulate the fields in a switch
 } switch_t;
 
@@ -74,14 +83,23 @@ void switch_constructor(switch_t* this_switch, int number, int top_row, int left
                                         top_row + SPED_Y_POS,
                                         left_col + SPED_X_POS,
                                         0, 0);
-    this_switch->field_array[5] = NULL;
 
-    for(int i = 0; i < 5; i++){
+    this_switch->field_array = (FIELD**)malloc(sizeof(FIELD*) * (DEFAULT_FIELDS + 1));
+    this_switch->field_array[0] = this_switch->name;
+    this_switch->field_array[1] = this_switch->priority;
+    this_switch->field_array[2] = this_switch->mac_addr;
+    this_switch->field_array[3] = this_switch->opposite_node;
+    this_switch->field_array[4] = this_switch->link_speed;
+    this_switch->field_array[DEFAULT_FIELDS] = NULL;
+
+
+    for(int i = 0; i < DEFAULT_FIELDS; i++){
         set_field_back(this_switch->field_array[i], A_UNDERLINE);
         field_opts_off(this_switch->field_array[i], O_AUTOSKIP);
     }
 
     this_switch->form = new_form(this_switch->field_array);
+
     
     post_form(this_switch->form); // ?????
 }
@@ -92,9 +110,10 @@ void switch_destructor(switch_t* this_switch){
     unpost_form(this_switch->form);
     free_form(this_switch->form);
 
-    for(int i = 0; i < 5; i++){
+    for(int i = 0; i < DEFAULT_FIELDS; i++){
         free_field(this_switch->field_array[i]);
     }
+    free(this_switch->field_array);
 }
 
 void switch_print(switch_t* this_switch){
@@ -119,6 +138,7 @@ FORM* switch_get_form(switch_t* this_switch){
     return this_switch->form;
 }
 
+/* Testing purposes
 int main(void){
 
     int ch;
@@ -160,4 +180,4 @@ int main(void){
 
     return 0;
 }
-
+*/
