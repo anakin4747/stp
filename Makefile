@@ -6,7 +6,7 @@ INCDIRS = include
 CC = gcc
 OPT = -O0
 DEPFLAGS = -MP -MD
-INCLIBS = -lncurses
+INCLIBS = -lform -lncurses
 CFLAGS = -Wall -Wextra -g $(foreach D, $(INCDIRS), -I$(D)) $(OPT) $(DEPFLAGS)
 CFILES = $(foreach D, $(CODEDIRS), $(wildcard $(D)/*.c))
 OBJECTS = $(patsubst %.c, %.o, $(CFILES))
@@ -23,6 +23,7 @@ $(BINARY): $(OBJECTS)
 
 clean:
 	rm -rf $(BINARY) $(OBJECTS) $(DEPFILES)
+	tmux kill-window -t debug
 
 debug: all
 	@./tmux.sh

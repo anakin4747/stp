@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # if a debug window exists delete it
-if tmux list-windows | grep -q "Debug"; then
-    tmux kill-window -t "Debug"
+if tmux list-windows | grep -q "debug"; then
+    tmux kill-window -t "debug"
 fi
 
 # Create a debug window
-tmux new-window -n "Debug"
+tmux new-window -n "debug"
 
 # Get number of windows
 number_of_windows=$(tmux list-windows | wc -l)
