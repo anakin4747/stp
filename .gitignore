@@ -2,3 +2,4 @@ subnet
 docs
 *.d
 *.o
+.gdbinit

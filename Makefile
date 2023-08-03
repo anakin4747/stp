@@ -15,25 +15,17 @@ DEPFILES = $(patsubst %.c, %.d, $(CFILES))
 all: $(BINARY)
 
 
-#	@./$(TESTDIRS)/test.py
-
 $(BINARY): $(OBJECTS)
 	$(CC) -o $@ $^ $(INCLIBS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-# test: $(BINARY)
-# 	@echo "Testing invalid inputs"
-# 	@./$(TESTDIRS)/test.py
-# 	@echo "Testing for memory leaks with valgrind"
-# 	@echo "This may take some time"
-# 	@./$(TESTDIRS)/valgrind_test.py
-# 
-# # Move the echos to prints in the python files
-
 clean:
 	rm -rf $(BINARY) $(OBJECTS) $(DEPFILES)
+
+debug: all
+	@./tmux.sh
 
 install: $(BINARY)
 	install -m 755 $(BINARY) $(INSTALLDIR)

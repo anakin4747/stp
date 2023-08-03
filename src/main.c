@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <curses.h>
 #include <ncurses.h>
 
 #define NAME_X_POS 9
@@ -13,9 +12,19 @@
 #define SPED_X_POS 17
 #define SPED_Y_POS 8
 
-void ZZquit(void);
+int positions[5][2] = {
+    {NAME_Y_POS, NAME_X_POS},
+    {PRIO_Y_POS, PRIO_X_POS},
+    {MACA_Y_POS, MACA_X_POS},
+    {NODE_Y_POS, NODE_X_POS},
+    {SPED_Y_POS, SPED_X_POS}
+};
 
-int main(int argc, char** argv){
+void safe_quit(void);
+void general_movement(char);
+
+int main(void){
+
 
     // Initilazes screen
     initscr();
@@ -33,66 +42,69 @@ int main(int argc, char** argv){
            "    Opposite Node = \n"
            "    Link Speed = \n"
            "\n\n"
-           " h/j/k/l/c/a/A/i/I/<enter>\t? for help\n");
+           " ? for help\n");
+
+    // Move to the first position 
+    move(positions[0][0], positions[0][1]);
+
 
     // Refresh screen to match memory
     refresh();
     // Anytime you print something to the window you need to refresh to ensure
     // it gets updated to the user
-    //
-    mvprintw(NAME_Y_POS, NAME_X_POS, "NAME");
-    mvprintw(PRIO_Y_POS, PRIO_X_POS, "prio");
-    mvprintw(MACA_Y_POS, MACA_X_POS, "mac");
-    mvprintw(NODE_Y_POS, NODE_X_POS, "node");
-    mvprintw(SPED_Y_POS, SPED_X_POS, "speed");
 
     // Waits for user input
-    char input = getch();
+    char input;
     int Z_depressed = 0;
 
-    switch (input){
-        case 'h':
-        case 'j':
-        case 'k':
-        case 'l':
-            // general_movement_function(input);
-            break;
-        case 'c':
-            // replace_input();
-            break;
-        case 'i':
-        case 'I':
-        case 'a':
-        case 'A':
-            // edit_current_display(input);
-            // editting and changing should have the same functionality the
-            // change just erases before, so they can end up going to the same
-            // function
-            break;
-        case '\033':
-            printw("Escape\n");
-            // if in insert mode exit insert mode
-            // else do nothing
-            break;
-        case '\n':
-            printw("Enter\n");
-            // move to next item to input
-            // if in insert mode exit insert mode
-            break;
-        case '?':
-            printw("Help\n");
-            break;
-        case 'Z':
-            // Wont work until the switch is looped
-            Z_depressed ? ZZquit() : (Z_depressed = 1);
-            break;
-        default:
-            // Do nothing
-            break;
+
+    while(1){
+
+        input = getch();
+
+        // This switch statement will only run for normal mode
+        // insert mode will be handled in c, i, I, a, and A
+        switch (input){
+            case 'h': case 'j': case 'k': case 'l':
+                general_movement(input);
+                break;
+            case 'c':
+                // replace_input();
+                break;
+            case 'i': case 'I': case 'a': case 'A':
+                // edit_current_display(input);
+                // This input for insert mode will be handled in these functions
+                // editting and changing should have the same functionality the
+                // change just erases before, so they can end up going to the same
+                // function
+                break;
+            case '\033':
+                printw("Escape\n");
+                // Maybe just move this to the editting functions
+                break;
+            case '\n':
+                printw("Enter\n");
+                // move to next item to input
+                break;
+            case '?':
+                printw("Help\n");
+                break;
+            case 'Z':
+                // Wont work until the switch is looped
+                Z_depressed ? safe_quit() : (Z_depressed = 1);
+                break;
+            case 'q':
+                safe_quit();
+                break;
+            default:
+                // Do nothing
+                break;
+        }
+        if(input != 'Z'){
+            Z_depressed = 0;
+        }
     }
 
-    refresh();
-    getch();
 
     // Resets terminal
     endwin();
@@ -100,8 +112,43 @@ int main(int argc, char** argv){
     return 0;
 }
 
-void ZZquit(void){
+void safe_quit(void){
     endwin();
-    exit(1);
+    exit(0);
 }
 
+void general_movement(char input){
+    static int current_line = 0;
+
+    switch (input) {
+        case 'j':
+            if(current_line >= 4){
+                // Out of bounds
+            } else if(current_line <= 0){
+                // Out of bounds
+            } else {
+                // In bounds
+                current_line++;
+            }
+            break;
+
+        case 'k':
+            if(current_line >= 4){
+                // Out of bounds
+            } else if(current_line <= 0){
+                // Out of bounds
+            } else {
+                // In bounds
+                current_line--;
+            }
+            break;
+
+        case 'h':
+            break;
+        case 'l':
+            break;
+        default:
+            break;
+    }
+    move(positions[current_line][0], positions[current_line][1]);
+}
