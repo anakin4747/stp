@@ -27,18 +27,6 @@ typedef enum {
 } viewing_state;
 
 
-/*
- *
- * Where I left off
- *
- * - Couldn't get all the fields to work together in a dynamic FIELD**
- * - Needs to be dynamic so the user can add links willy nilly
- * - Needs to be in that FIELD** so that they can all be in the same form
- * - This currently works with a static array but it can be the permanent solution
- *
- */
-
-// Forward declaration
 typedef struct {
     viewing_state view;
     unsigned int number;

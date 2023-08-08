@@ -10,7 +10,7 @@ struct switch_t;
 struct switch_t* switch_malloc(void);
 
 // Constructor
-void switch_constructor(struct switch_t*, int, int, int);
+void switch_constructor(struct switch_t*, int number, int top_row, int left_col);
 
 // Destructor
 void switch_destructor(struct switch_t*);
