@@ -1,7 +1,7 @@
 #ifndef SWITCH_H
 #define SWITCH_H
 
-#include <form.h>
+#include "../include/common_headers.h"
 
 // Forward declaration
 struct switch_t;

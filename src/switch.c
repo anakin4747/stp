@@ -1,6 +1,4 @@
-#include <curses.h>
-#include <form.h>
-#include <stdlib.h>
+#include "../include/common_headers.h" // Don't switch to switch.h
 
 #define NAME_FIELD_WIDTH 10
 #define PRIO_FIELD_WIDTH 10
@@ -88,14 +86,16 @@ void switch_constructor(switch_t* this_switch, int number, int top_row, int left
 
     this_switch->form = new_form(this_switch->field_array);
 
-    
-    post_form(this_switch->form); // ?????
+    // post_form(this_switch->form); // This should get handled by the main
+    // control flow so that only one switch form is posted at a time
 }
 
 // Destructor
 void switch_destructor(switch_t* this_switch){
 
-    unpost_form(this_switch->form);
+    // unpost_form(this_switch->form); // This should get handled by the main
+    // control flow so that only one switch form is posted at a time
+    
     free_form(this_switch->form);
 
     for(int i = 0; i < DEFAULT_FIELDS; i++){
@@ -125,47 +125,3 @@ void switch_print(switch_t* this_switch){
 FORM* switch_get_form(switch_t* this_switch){
     return this_switch->form;
 }
-
-/* Testing purposes
-int main(void){
-
-    int ch;
-
-    initscr();
-    cbreak();
-    noecho();
-    keypad(stdscr, TRUE);
-
-    switch_t* swtch = switch_malloc();
-
-    switch_constructor(swtch, 1, 0, 0);
-
-    switch_print(swtch);
-
-    FORM* switch_form = switch_get_form(swtch);
-
-    while((ch = getch()) != 'q'){
-
-        switch(ch){
-
-            case 'j':
-                form_driver(switch_form, REQ_NEXT_FIELD);
-                form_driver(switch_form, REQ_END_LINE);
-                break;
-            case 'k':
-                form_driver(switch_form, REQ_PREV_FIELD);
-                form_driver(switch_form, REQ_END_LINE);
-                break;
-            default:
-                form_driver(switch_form, ch);
-                break;
-        }
-    }
-
-    switch_destructor(swtch);
-    free(swtch);
-    endwin();
-
-    return 0;
-}
-*/
